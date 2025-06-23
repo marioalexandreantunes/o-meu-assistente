@@ -39,7 +39,7 @@ Para ativar o ambiente virtual, use o comando apropriado para o seu sistema oper
   source venv/bin/activate
   ```
   para atualizar pip :
-  
+
   ```bash
   python.exe -m pip install --upgrade pip
   ```
@@ -76,16 +76,17 @@ Para configurar as variáveis de ambiente necessárias, crie um arquivo `.env` n
 
 ```plaintext
 # Exemplo de arquivo .env
-GROQ_API_KEY=seu_groq_api_key_aqui
-OPENROUTER_API_KEY=seu_openrouter_api_key_aqui
-OCTAGON_API_KEY=seu_octagon_api_key_aqui
-TAVILY_API_KEY=seu_tavily_api_key_aqui
-BRAVE_API_KEY=seu_brave_api_key_aqui
+GROQ_API_KEY=
+OPENROUTER_API_KEY=
+OCTAGON_API_KEY=
+TAVILY_API_KEY=
+BRAVE_API_KEY=
+PERPLEXITY_API_KEY=
+FIRECRAWL_API_KEY=
 FICHEIRO=caminho/para/seu/arquivo.xlsx
 JANELA=nome_da_folha_do_excel
 ```
 
-Substitua `seu_groq_api_key_aqui`, `seu_openrouter_api_key_aqui`, `seu_octagon_api_key_aqui`, `seu_tavily_api_key_aqui`, `seu_brave_api_key_aqui`, `caminho/para/seu/arquivo.xlsx` e `nome_da_folha_do_excel` pelos valores reais que você precisa para o seu ambiente.
 
 ## Estrutura do Projeto
 

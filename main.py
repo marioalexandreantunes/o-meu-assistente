@@ -64,9 +64,23 @@ config = {
             "env": {"TAVILY_API_KEY": os.getenv("TAVILY_API_KEY")},
         },
         "brave-search": {
-            "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-brave-search"],
             "env": {"BRAVE_API_KEY": os.getenv("BRAVE_API_KEY")},
+        },
+        "perplexity-ask": {
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "server-perplexity-ask"],
+            "env": {"PERPLEXITY_API_KEY": os.getenv("PERPLEXITY_API_KEY")},
+        },
+        "wikipedia": {
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "wikipedia-mcp-server"],
+        },
+        "firecrawl-mcp": {
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "firecrawl-mcp"],
+            "env": {"FIRECRAWL_API_KEY": os.getenv("FIRECRAWL_API_KEY-API-KEY")},
         },
     }
 }
