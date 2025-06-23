@@ -80,7 +80,7 @@ config = {
         "firecrawl-mcp": {
             "command": "cmd",
             "args": ["/c", "npx", "-y", "firecrawl-mcp"],
-            "env": {"FIRECRAWL_API_KEY": os.getenv("FIRECRAWL_API_KEY-API-KEY")},
+            "env": {"FIRECRAWL_API_KEY": os.getenv("FIRECRAWL_API_KEY")},
         },
     }
 }
