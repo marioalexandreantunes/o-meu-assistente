@@ -23,6 +23,7 @@ from dotenv import load_dotenv
         - duckduckgo-search: Motor de pesquisa DuckDuckGo (Gratis)
         - facebook: Serviço de pesquisa Facebook (Pago)
         - instagram: Serviço de pesquisa Instagram (Pago)
+        - linkedin: Serviço de pesquisa LinkedIn (Creditos Gratis)
 
     Note:
         Todos os comandos são configurados para Windows usando 'cmd /c'
@@ -134,6 +135,14 @@ all_mcp_servers = {
                     "APIFY_API_KEY"
                 ),  # https://apify.com/apify/instagram-search-scraper/api/mcp
             ],
+        },
+        "linkedin": {
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "@horizondatawave/mcp"],
+            "env": {
+                "HDW_ACCESS_TOKEN": os.getenv("HDW_ACCESS_TOKEN"),
+                "HDW_ACCOUNT_ID": os.getenv("HDW_ACCOUNT_ID"),  # horizondatawave.ai
+            },
         },
     }
 }
