@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv  
+    
     
 """
     Configuração dos servidores MCP (Model Context Protocol).
@@ -16,6 +18,9 @@ import os
         Todos os comandos são configurados para Windows usando 'cmd /c'
         exceto brave-search que usa npx diretamente.
 """
+    
+load_dotenv()
+
     
 config = {
     "mcpServers": {

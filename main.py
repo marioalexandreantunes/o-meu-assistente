@@ -334,54 +334,58 @@ async def main() -> None:
         raise ValueError("GROQ_API_KEY not set in environment variables")
 
     # Inicializar componentes
-    client = MCPClient.from_dict(config)
-    gestor = GestorInstituicoes()
-    gestor_final = GestorInstituicoes()
+    mcp_servers = MCPClient.from_dict(config)
+    ficheiro_original = GestorInstituicoes()
+    ficheiro_final = GestorInstituicoes()
     console = Console()
 
-    console.print(client.get_server_names(), style="green")
+    console.print(mcp_servers.get_server_names(), style="green")
     console.print("=== GESTOR DE INSTITUIÇÕES ===", style="yellow")
 
     # Carregar dados de entrada
     print("1. Carregar dados do ficheiro excel (*.xlsx)")
-    gestor.carregar_de_excel(os.getenv("FICHEIRO"), os.getenv("JANELA"))
+    ficheiro_original.carregar_de_excel(os.getenv("FICHEIRO"), os.getenv("JANELA"))
 
     print("\n2. Listando todas as instituições:")
-    gestor.listar_todas()
+    ficheiro_original.listar_todas()
 
     # Configurar LLMs
     openrouter_consolidacao = ChatOpenAI(
         model="mistralai/devstral-small:free",
-        openai_api_base="https://openrouter.ai/api/v1",
-        openai_api_key=os.getenv("OPENROUTER_API_KEY"),
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.getenv("OPENROUTER_API_KEY"),
         temperature=0.3,
         top_p=0.7,
     )
 
-    openrouter = ChatOpenAI(
-        model="openai/gpt-4.1-nano",
-        openai_api_base="https://openrouter.ai/api/v1",
-        openai_api_key=os.getenv("OPENROUTER_API_KEY"),
+    openrouter_ferramentas = ChatOpenAI(
+        model="openai/gpt-4.1-nano", # nem todos os modelos suportam function/tool calling [https://openrouter.ai/models?fmt=cards&supported_parameters=tools&order=pricing-low-to-high]
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.getenv("OPENROUTER_API_KEY"),
         temperature=0.3,
         top_p=0.7,
     )
 
     # Configurar agente MCP
+    # https://docs.mcp-use.com/essentials/agent-configuration
     agent = MCPAgent(
-        llm=openrouter,
-        client=client,
+        llm=openrouter_ferramentas,
+        client=mcp_servers,
         max_steps=30,
         use_server_manager=True,
+        memory_enabled=False,
+        auto_initialize=True,
         system_prompt="És um especialista em pesquisar informações de instituições. Sempre usa URLs válidos quando usares browser_navigate. Para pesquisar no Google, usa o formato: https://www.google.com/search?q=TERMO_DE_PESQUISA",
+        disallowed_tools=[]
     )
 
     # Processar cada instituição
-    total_instituicoes = len(gestor.instituicoes)
+    total_instituicoes = len(ficheiro_original.instituicoes)
     console.print(
         f"🔍 Irei processar {total_instituicoes} instituições...", style="cyan"
     )
 
-    for idx, instituicao in enumerate(gestor.instituicoes, 1):
+    for idx, instituicao in enumerate(ficheiro_original.instituicoes, 1):
         console.print(
             f"\n=== 🚀 Processando {idx}/{total_instituicoes}: {instituicao.instituicao} ===",
             style="blue",
@@ -393,14 +397,14 @@ async def main() -> None:
                 instituicao, agent, openrouter_consolidacao, console
             )
 
-            gestor_final.adicionar_instituicao(instituicao_consolidada)
+            ficheiro_final.adicionar_instituicao(instituicao_consolidada)
 
             # Backup periódico
             if idx % 5 == 0:
                 console.print(
                     f"💾 Salvando backup após {idx} instituições...", style="cyan"
                 )
-                gestor_final.salvar_backup_automatico()
+                ficheiro_final.salvar_backup_automatico()
 
         except Exception as e:
             console.print(
@@ -417,18 +421,18 @@ async def main() -> None:
                 codigo_postal=instituicao.codigo_postal,
                 observacoes=instituicao.observacoes,
             )
-            gestor_final.adicionar_instituicao(instituicao_original)
+            ficheiro_final.adicionar_instituicao(instituicao_original)
 
         # Pausa para evitar limitação de taxa
         await asyncio.sleep(2)
 
     # Salvar resultados finais
     console.print("\n💾 Gravando resultado final...", style="cyan")
-    gestor_final.salvar_backup_automatico()
-    gestor_final.salvar_atualizacao_excel("Instituicoes_Atualizadas_Final.xlsx")
+    ficheiro_final.salvar_backup_automatico()
+    ficheiro_final.salvar_atualizacao_excel("Instituicoes_Atualizadas_Final.xlsx")
 
     console.print(
-        f"\n✅ Processamento concluído! {len(gestor_final.instituicoes)} instituições processadas.",
+        f"\n✅ Processamento concluído! {len(ficheiro_final.instituicoes)} instituições processadas.",
         style="green",
     )
 
