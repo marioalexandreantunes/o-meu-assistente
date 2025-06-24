@@ -22,7 +22,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
     
-config = {
+all_mcp_servers = {
     "mcpServers": {
         "octagon-deep-research-mcp": {
             "command": "cmd",
@@ -57,5 +57,19 @@ config = {
             "args": ["/c", "npx", "-y", "firecrawl-mcp"],
             "env": {"FIRECRAWL_API_KEY": os.getenv("FIRECRAWL_API_KEY")},
         },
+    }
+}
+
+web_mcp_servers = {
+    "mcpServers": {
+        "playwright": {
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "@playwright/mcp@latest", "--headless"],
+        },
+        "tavily": {
+            "command": "cmd",
+            "args": ["/c", "npx", "-y", "tavily-mcp@latest"],
+            "env": {"TAVILY_API_KEY": os.getenv("TAVILY_API_KEY")},
+        }
     }
 }

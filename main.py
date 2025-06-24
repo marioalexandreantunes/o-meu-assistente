@@ -42,7 +42,7 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from mcp_use import MCPAgent, MCPClient
 from instituicao import Instituicao
-from mcp_servers import config
+from mcp_servers import all_mcp_servers, web_mcp_servers
 
 # Carrega as variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -334,13 +334,17 @@ async def main() -> None:
         raise ValueError("GROQ_API_KEY not set in environment variables")
 
     # Inicializar componentes
-    mcp_servers = MCPClient.from_dict(config)
+    mcp_servers = MCPClient.from_dict(all_mcp_servers)
+    # se quiser so inicializar algumas ferramentas!
+    mcp_servers_just_for_web = MCPClient.from_dict(web_mcp_servers)
+    
     ficheiro_original = GestorInstituicoes()
     ficheiro_final = GestorInstituicoes()
     console = Console()
 
-    console.print(mcp_servers.get_server_names(), style="green")
-    console.print("=== GESTOR DE INSTITUIÇÕES ===", style="yellow")
+    print(Panel(str(mcp_servers.get_server_names()), title="SERVIDORES MCP DISPONIVEIS", style="yellow"))
+    print(Panel(str(mcp_servers_just_for_web.get_server_names()), title="SERVIDORES MCP USAR", style="yellow"))
+    console.print("\n=== GESTOR DE INSTITUIÇÕES ===", style="yellow")
 
     # Carregar dados de entrada
     print("1. Carregar dados do ficheiro excel (*.xlsx)")
@@ -358,6 +362,8 @@ async def main() -> None:
         top_p=0.7,
     )
 
+    # google/gemini-2.0-flash-lite-001 , $0.075/M input tokens - $0.30/M output tokens
+    # openai/gpt-4.1-nano , $0.10/M input tokens - $0.40/M output tokens
     openrouter_ferramentas = ChatOpenAI(
         model="openai/gpt-4.1-nano", # nem todos os modelos suportam function/tool calling [https://openrouter.ai/models?fmt=cards&supported_parameters=tools&order=pricing-low-to-high]
         base_url="https://openrouter.ai/api/v1",
@@ -370,7 +376,7 @@ async def main() -> None:
     # https://docs.mcp-use.com/essentials/agent-configuration
     agent = MCPAgent(
         llm=openrouter_ferramentas,
-        client=mcp_servers,
+        client=mcp_servers_just_for_web,
         max_steps=30,
         use_server_manager=True,
         memory_enabled=False,
