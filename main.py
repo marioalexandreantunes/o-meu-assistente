@@ -42,48 +42,10 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from mcp_use import MCPAgent, MCPClient
 from instituicao import Instituicao
+from mcp_servers import config
 
 # Carrega as variáveis de ambiente do arquivo .env
 load_dotenv()
-
-# Configuração dos servidores MCP para Windows
-config = {
-    "mcpServers": {
-        "octagon-deep-research-mcp": {
-            "command": "cmd",
-            "args": ["/c", "npx", "-y", "octagon-deep-research-mcp@latest"],
-            "env": {"OCTAGON_API_KEY": os.getenv("OCTAGON_API_KEY")},
-        },
-        "playwright": {
-            "command": "cmd",
-            "args": ["/c", "npx", "-y", "@playwright/mcp@latest", "--headless"],
-        },
-        "tavily": {
-            "command": "cmd",
-            "args": ["/c", "npx", "-y", "tavily-mcp@latest"],
-            "env": {"TAVILY_API_KEY": os.getenv("TAVILY_API_KEY")},
-        },
-        "brave-search": {
-            "command": "cmd",
-            "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-brave-search"],
-            "env": {"BRAVE_API_KEY": os.getenv("BRAVE_API_KEY")},
-        },
-        "perplexity-ask": {
-            "command": "cmd",
-            "args": ["/c", "npx", "-y", "server-perplexity-ask"],
-            "env": {"PERPLEXITY_API_KEY": os.getenv("PERPLEXITY_API_KEY")},
-        },
-        "wikipedia": {
-            "command": "cmd",
-            "args": ["/c", "npx", "-y", "wikipedia-mcp-server"],
-        },
-        "firecrawl-mcp": {
-            "command": "cmd",
-            "args": ["/c", "npx", "-y", "firecrawl-mcp"],
-            "env": {"FIRECRAWL_API_KEY": os.getenv("FIRECRAWL_API_KEY")},
-        },
-    }
-}
 
 
 async def processar_instituicao_google(
