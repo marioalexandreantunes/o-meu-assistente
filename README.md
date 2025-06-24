@@ -38,8 +38,8 @@ Para ativar o ambiente virtual, use o comando apropriado para o seu sistema oper
   ```bash
   source venv/bin/activate
   ```
-  para atualizar pip :
-
+  
+- para atualizar pip:
   ```bash
   python.exe -m pip install --upgrade pip
   ```
