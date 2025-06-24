@@ -364,8 +364,11 @@ async def main() -> None:
 
     # google/gemini-2.0-flash-lite-001 , $0.075/M input tokens - $0.30/M output tokens
     # openai/gpt-4.1-nano , $0.10/M input tokens - $0.40/M output tokens
+    # nem todos os modelos suportam function/tool calling [https://openrouter.ai/models?fmt=cards&supported_parameters=tools&order=pricing-low-to-high]
+    # mesmo que suportem function/tool calling, verifica se os resultados são válidos, modelos da Google Gemini, OpenAI ou da Anthropic funcionam bem. 
+    # Apesar de haver mais modelos que suportam function/tool calling nativamente poderão não ser suportados atravez da OpenRouter.ai
     openrouter_ferramentas = ChatOpenAI(
-        model="openai/gpt-4.1-nano", # nem todos os modelos suportam function/tool calling [https://openrouter.ai/models?fmt=cards&supported_parameters=tools&order=pricing-low-to-high]
+        model="openai/gpt-4.1-nano",
         base_url="https://openrouter.ai/api/v1",
         api_key=os.getenv("OPENROUTER_API_KEY"),
         temperature=0.3,
